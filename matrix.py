@@ -61,11 +61,6 @@ def ident( matrix ):
                 matrix[c][r] = 1
             else:
                 matrix[c][r] = 0
-
-def scalar_mult( matrix, s ):
-    for r in range( len( matrix[0] ) ):
-        for c in range( len(matrix) ):
-            matrix[c][r]*= s
             
 #m1 * m2 -> m2
 def matrix_mult( m1, m2 ):
