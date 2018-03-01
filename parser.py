@@ -39,8 +39,15 @@ def isFloat(s):
     except ValueError:
         return False
 
+def floatIsInt(s):
+    try:
+        float(s)
+        return s[len(s)-1] == '0'
+    except ValueError:
+        return False
+
 def isNegative(s):
-    return s[0] == '-' and s[1:].isdigit()
+    return len(s) > 1 and s[0] == '-' and s[1:].isdigit()
           
 def parse_file( fname, points, transform, screen, color ):
     f = open(fname,'r')
@@ -51,6 +58,8 @@ def parse_file( fname, points, transform, screen, color ):
         for k in range(len(g[c])):
             if g[c][k].isdigit():
                 g[c][k] = int(g[c][k])
+            elif floatIsInt(g[c][k]):
+                g[c][k] = int(g[c][k][len(s)-2])
             elif isFloat(g[c][k]):
                 g[c][k] = float(g[c][k])
             elif isNegative(g[c][k]):
@@ -66,11 +75,13 @@ def parse_file( fname, points, transform, screen, color ):
         elif g[i][0] == 'scale':
             i += 1
             s = make_scale(g[i][0],g[i][1],g[i][2])
-            matrix_mult(transform,s)
+            matrix_mult(s,transform)
+            print 'scale:\n' + str(transform)
         elif g[i][0] == 'move':
             i += 1
             s = make_translate(g[i][0],g[i][1],g[i][2])
-            matrix_mult(transform,s)
+            matrix_mult(s,transform)
+        #rotation issues due to decimal points in the arguments
         elif g[i][0] == 'rotate':
             i += 1
             if g[i][0] == 'z':
@@ -79,21 +90,16 @@ def parse_file( fname, points, transform, screen, color ):
                 s = make_rotY(g[i][1])
             elif g[i][0] == 'x':
                 s = make_rotX(g[i][1])
-            matrix_mult(transform,s)
+            matrix_mult(s,transform)
         elif g[i][0] == 'apply':
+            print transform
             matrix_mult(transform,points)
         elif g[i][0] == 'display':
+            clear_screen(screen)
             draw_lines(points,screen,color)
             display(screen)
-        #save doesn't work at all
         elif g[i][0] == 'save':
             draw_lines(points,screen,color)
             i += 1
-            h = open(g[i][0],'w')
-            a = ''
-            for x in screen:
-                a += ' '.join(x) + '\n'
-                print a
-            h.write(a[:len(a)-2])
-            h.close()
+            save_extension(screen,g[i][0])
         i += 1
