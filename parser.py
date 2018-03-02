@@ -31,25 +31,7 @@ The file follows the following format:
 
 See the file script for an example of the file format
 """
-#for converting negative and floating point numbers from strings to numbers
-def isFloat(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-def floatIsInt(s):
-    try:
-        float(s)
-        return s[len(s)-1] == '0'
-    except ValueError:
-        return False
-
-def isNegative(s):
-    return len(s) > 1 and s[0] == '-' and s[1:].isdigit()
-
-#rounding
+#rounding the final matrix
 def roundMatrix(m):
     for r in range(len(m)):
         for c in range(len(m[r])):
@@ -64,13 +46,8 @@ def parse_file( fname, points, transform, screen, color ):
         for k in range(len(g[c])):
             if g[c][k].isdigit():
                 g[c][k] = int(g[c][k])
-            elif floatIsInt(g[c][k]):
-                g[c][k] = int(g[c][k][len(s)-2])
-            elif isFloat(g[c][k]):
-                g[c][k] = float(g[c][k])
-            elif isNegative(g[c][k]):
-                g[c][k] = int(g[c][k])*-1
     i = 0
+    print g
     while i < len(g):
         if g[i][0] == 'line':
             i += 1
@@ -84,25 +61,17 @@ def parse_file( fname, points, transform, screen, color ):
         elif g[i][0] == 'move':
             i += 1
             s = make_translate(g[i][0],g[i][1],g[i][2])
-            print_matrix(s)
-            print_matrix(transform)
             matrix_mult(s,transform)
-            print_matrix(transform)
-        #rotation isn't working and i have no idea why
         elif g[i][0] == 'rotate':
             i += 1
             if g[i][0] == 'z':
                 s = make_rotZ(g[i][1])
-                print 'rotZ:\n'
-                print_matrix(s)
             elif g[i][0] == 'y':
                 s = make_rotY(g[i][1])
-                print 'rotY:\n'
-                print_matrix(s)
             elif g[i][0] == 'x':
                 s = make_rotX(g[i][1])
-                print 'rotX:\n'
-                print_matrix(s)
+            print str(g[i][0]) + ':\n'
+            print_matrix(s)
             matrix_mult(s,transform)
         elif g[i][0] == 'apply':
             matrix_mult(transform,points)
