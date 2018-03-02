@@ -31,8 +31,8 @@ def make_rotY( theta ):
     m = new_matrix()
     ident(m)
     m[0][0] = math.cos(theta)
-    m[0][2] = math.sin(theta)
-    m[2][0] = m[0][2] * -1
+    m[2][0] = -1 * math.sin(theta)
+    m[0][2] = m[2][0] * -1
     m[2][2] = m[0][0]
     return m
 
@@ -48,9 +48,9 @@ def make_rotZ( theta ):
 
 def print_matrix( matrix ):
     s = ''
-    for r in range( len( matrix[0] ) ):
-        for c in range( len(matrix) ):
-            s+= str(matrix[c][r]) + ' '
+    for r in range( len( matrix ) ):
+        for c in range( len(matrix[r]) ):
+            s+= str(matrix[r][c]) + ' '
         s+= '\n'
     print s
 
@@ -63,6 +63,32 @@ def ident( matrix ):
                 matrix[c][r] = 0
             
 #m1 * m2 -> m2
+'''def matrix_mult( m1, m2 ):
+    ans = new_matrix(len(m1),len(m2[0]))
+    for cellr in range(len(ans)):
+        for cellc in range(len(ans[0])):
+            for c in range(len(ans)):
+               ans[cellr][cellc] += m1[cellr][c] * m2[c][cellc]
+    m2[:] = list(ans)
+    print_matrix(m1)
+    print_matrix(m2)'''
+
+'''def getCol(m, c):
+    col = []
+    for r in range(len(m)):
+        col.append(m[r][c])
+    return col
+    
+def matrix_mult( m1, m2 ):
+    print_matrix(m1)
+    print_matrix(m2)
+    ans = new_matrix2(len(m1),len(m2[0]))
+    for r in range(len(ans)):
+        for c in range(len(ans[0])):
+            for x in range(len(ans)):
+                ans[r][c] += m1[r][x] * m2[x][c]
+    m2[:] = ans'''
+
 def matrix_mult( m1, m2 ):
 
     point = 0
@@ -77,11 +103,18 @@ def matrix_mult( m1, m2 ):
                             m1[3][r] * tmp[3])
         point+= 1
 
-
 def new_matrix(rows = 4, cols = 4):
     m = []
-    for c in range( cols ):
+    for r in range( rows ):
         m.append( [] )
-        for r in range( rows ):
-            m[c].append( 0 )
+        for c in range( cols ):
+            m[r].append( 0 )
     return m
+
+'''def new_matrix2(rows, cols):
+    m = []
+    for r in range( rows ):
+        m.append( [] )
+        for c in range( cols ):
+            m[r].append( 0 )
+    return m'''
