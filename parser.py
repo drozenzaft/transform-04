@@ -48,6 +48,12 @@ def floatIsInt(s):
 
 def isNegative(s):
     return len(s) > 1 and s[0] == '-' and s[1:].isdigit()
+
+#rounding
+def roundMatrix(m):
+    for r in range(len(m)):
+        for c in range(len(m[r])):
+            m[r][c] = int(m[r][c])
           
 def parse_file( fname, points, transform, screen, color ):
     f = open(fname,'r')
@@ -65,7 +71,6 @@ def parse_file( fname, points, transform, screen, color ):
             elif isNegative(g[c][k]):
                 g[c][k] = int(g[c][k])*-1
     i = 0
-    print g
     while i < len(g):
         if g[i][0] == 'line':
             i += 1
@@ -76,29 +81,38 @@ def parse_file( fname, points, transform, screen, color ):
             i += 1
             s = make_scale(g[i][0],g[i][1],g[i][2])
             matrix_mult(s,transform)
-            print 'scale:\n' + str(transform)
         elif g[i][0] == 'move':
             i += 1
             s = make_translate(g[i][0],g[i][1],g[i][2])
+            print_matrix(s)
+            print_matrix(transform)
             matrix_mult(s,transform)
-        #rotation issues due to decimal points in the arguments
+            print_matrix(transform)
+        #rotation isn't working and i have no idea why
         elif g[i][0] == 'rotate':
             i += 1
             if g[i][0] == 'z':
                 s = make_rotZ(g[i][1])
+                print 'rotZ:\n'
+                print_matrix(s)
             elif g[i][0] == 'y':
                 s = make_rotY(g[i][1])
+                print 'rotY:\n'
+                print_matrix(s)
             elif g[i][0] == 'x':
                 s = make_rotX(g[i][1])
+                print 'rotX:\n'
+                print_matrix(s)
             matrix_mult(s,transform)
         elif g[i][0] == 'apply':
-            print transform
             matrix_mult(transform,points)
         elif g[i][0] == 'display':
             clear_screen(screen)
+            roundMatrix(points)
             draw_lines(points,screen,color)
             display(screen)
         elif g[i][0] == 'save':
+            roundMatrix(points)
             draw_lines(points,screen,color)
             i += 1
             save_extension(screen,g[i][0])
