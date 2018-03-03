@@ -47,7 +47,6 @@ def parse_file( fname, points, transform, screen, color ):
             if g[c][k].isdigit():
                 g[c][k] = int(g[c][k])
     i = 0
-    print g
     while i < len(g):
         if g[i][0] == 'line':
             i += 1
@@ -70,8 +69,6 @@ def parse_file( fname, points, transform, screen, color ):
                 s = make_rotY(g[i][1])
             elif g[i][0] == 'x':
                 s = make_rotX(g[i][1])
-            print str(g[i][0]) + ':\n'
-            print_matrix(s)
             matrix_mult(s,transform)
         elif g[i][0] == 'apply':
             matrix_mult(transform,points)
